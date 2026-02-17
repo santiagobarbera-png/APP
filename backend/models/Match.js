@@ -1,35 +1,31 @@
 class Match {
-    constructor(userId1, userId2, status) {
+    constructor(id, userId1, userId2, compatibilityScore, matchedAt, status) {
+        this.id = id;
         this.userId1 = userId1;
         this.userId2 = userId2;
+        this.compatibilityScore = compatibilityScore;
+        this.matchedAt = matchedAt;
         this.status = status;
-        this.createdAt = new Date();
     }
-
-    // Save a new match to the database
+    
     save() {
-        // implementation of save to database
+        // Logic to save the Match object to the database
     }
-
-    // Find a match by ID
-    static findById(matchId) {
-        // implementation to find a match by ID
+    
+    static findById(id) {
+        // Logic to find a Match by id
     }
-
-    // Find all matches for a user
+    
     static findByUserId(userId) {
-        // implementation to find matches by user ID
+        // Logic to find Matches by userId
     }
-
-    // Update the status of a match
-    updateStatus(newStatus) {
-        this.status = newStatus;
-        // implementation to update status in database
+    
+    updateStatus(matchId, status) {
+        // Logic to update the status of a Match
     }
-
-    // Delete a match
-    static delete(matchId) {
-        // implementation to delete a match
+    
+    static delete(id) {
+        // Logic to delete a Match by id
     }
 }
 
