@@ -3,6 +3,7 @@
 ## Project Overview
 This project is an innovative AI-powered dating application that connects users based on compatibility algorithms and user preferences. The app leverages state-of-the-art machine learning techniques to enhance the dating experience by offering personalized match suggestions.
 
+
 ## Features
 - **User Profiles:** Create and manage personal profiles with details such as interests, preferences, and photos.
 - **Match Suggestions:** AI-driven algorithms suggest potential matches based on user data and preferences.
