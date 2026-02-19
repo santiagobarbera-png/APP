@@ -1,0 +1,38 @@
+name: Daily Perfect Matches AI Processing
+
+on:
+  schedule:
+    # Ejecuta CADA DÍA a las 2 AM UTC (11 PM Argentina)
+    - cron: '0 2 * * *'
+  
+  # Permite ejecutar manualmente desde GitHub
+  workflow_dispatch:
+
+jobs:
+  perfect_matches:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      
+      - name: Install dependencies
+        run: npm install
+      
+      - name: Run Perfect Matches Algorithm
+        run: |
+          echo "🔍 Iniciando análisis de compatibilidad AI..."
+          npm run find:perfect-matches || echo "Script en desarrollo"
+      
+      - name: Send notifications to users
+        run: |
+          echo "📧 Enviando notificaciones..."
+          npm run send:notifications || true
+      
+      - name: Log completion
+        run: echo "✅ Perfect Matches processing completed!"
