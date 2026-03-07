@@ -4,6 +4,7 @@ require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
+const { authLimiter, apiLimiter } = require('./middleware/rateLimiter');
 const app = express();
 
 app.use(cors());
@@ -16,11 +17,11 @@ const matchRoutes = require('./routes/matchRoutes');
 const messageRoutes = require('./routes/messageRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 
-app.use('/api/auth', authRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/matches', matchRoutes);
-app.use('/api/messages', messageRoutes);
-app.use('/api/notifications', notificationRoutes);
+app.use('/api/auth', authLimiter, authRoutes);
+app.use('/api/users', apiLimiter, userRoutes);
+app.use('/api/matches', apiLimiter, matchRoutes);
+app.use('/api/messages', apiLimiter, messageRoutes);
+app.use('/api/notifications', apiLimiter, notificationRoutes);
 
 app.get('/health', (req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
