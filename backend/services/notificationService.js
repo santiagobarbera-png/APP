@@ -1,7 +1,6 @@
 'use strict';
 
 const Notification = require('../models/Notification');
-const config = require('../config');
 
 class NotificationService {
     static async createNotification(userId, type, title, body, data = null) {
@@ -43,11 +42,10 @@ class NotificationService {
         );
     }
 
-    static async sendEmailNotification(userId, subject, htmlBody) {
+    static async sendEmailNotification(userId, subject, _htmlBody) {
         // Email sending logic — requires nodemailer in production
         console.log(`[Email] To user ${userId}: ${subject}`);
-        // In production: use nodemailer with config.email settings
-        void config; // suppress unused warning until nodemailer is wired up
+        // In production: configure nodemailer with config.email settings
     }
 }
 

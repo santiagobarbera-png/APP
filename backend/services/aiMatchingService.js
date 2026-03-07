@@ -84,8 +84,8 @@ const calculateDistanceCompatibility = (lat1, lon1, lat2, lon2, maxDistanceKm = 
  */
 const calculateInterestsCompatibility = (interests1, interests2) => {
     if (!interests1 || !interests2) return 50;
-    const set1 = new Set((interests1).map((i) => i.toLowerCase().trim()));
-    const set2 = new Set((interests2).map((i) => i.toLowerCase().trim()));
+    const set1 = new Set(interests1.map((i) => i.toLowerCase().trim()));
+    const set2 = new Set(interests2.map((i) => i.toLowerCase().trim()));
     if (set1.size === 0 || set2.size === 0) return 50;
     const intersection = [...set1].filter((i) => set2.has(i)).length;
     const union = new Set([...set1, ...set2]).size;

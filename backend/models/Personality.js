@@ -1,22 +1,30 @@
+'use strict';
+
+const { calculateMBTICompatibility, calculateBigFiveCompatibility } = require('../services/aiMatchingService');
+
 class Personality {
     constructor(mbtiType, bigFiveScores) {
-        this.mbtiType = mbtiType; // MBTI personality type
-        this.bigFiveScores = bigFiveScores; // Scores for Big Five Personality Traits
+        this.mbtiType = mbtiType;
+        this.bigFiveScores = bigFiveScores;
     }
 
-    // Method to calculate compatibility metrics with another personality
     calculateCompatibility(otherPersonality) {
-        // Placeholder for compatibility calculation logic
-        return `Compatibility with ${otherPersonality.mbtiType}: TBD`;
+        const mbtiScore = calculateMBTICompatibility(this.mbtiType, otherPersonality.mbtiType);
+        const bigFiveScore = calculateBigFiveCompatibility(this.bigFiveScores, otherPersonality.bigFiveScores);
+        const totalScore = Math.round(mbtiScore * 0.5 + bigFiveScore * 0.5);
+        return { mbtiScore, bigFiveScore, totalScore };
     }
 
-    // Method to store psychometric data
-    storeData(data) {
-        // Placeholder for data storage logic
+    storeData(_data) {
+        // Persistence handled via User model and database schema
     }
 
-    // Method to analyze psychometric data
     analyzeData() {
-        // Placeholder for data analysis logic
+        return {
+            mbtiType: this.mbtiType,
+            bigFiveScores: this.bigFiveScores,
+        };
     }
 }
+
+module.exports = Personality;
