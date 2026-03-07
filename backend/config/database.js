@@ -1,11 +1,18 @@
+'use strict';
+
+require('dotenv').config();
 const { Pool } = require('pg');
 
 const pool = new Pool({
-    user: 'your_username', // replace with your database username
-    host: 'localhost', // replace with your database host
-    database: 'your_database', // replace with your database name
-    password: 'your_password', // replace with your database password
-    port: 5432, // default PostgreSQL port
+    connectionString: process.env.DATABASE_URL,
+    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+    max: 20,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 2000,
+});
+
+pool.on('error', (err) => {
+    console.error('Unexpected error on idle database client:', err);
 });
 
 module.exports = pool;

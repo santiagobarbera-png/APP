@@ -1,12 +1,15 @@
+'use strict';
+
 const express = require('express');
 const router = express.Router();
 const messageController = require('../controllers/messageController');
 const authMiddleware = require('../middleware/authMiddleware');
 
-// Message routes
-router.post('/send', authMiddleware, messageController.sendMessage);
-router.get('/conversation/:userId1/:userId2', authMiddleware, messageController.getConversationHistory);
-router.put('/mark-read', authMiddleware, messageController.markMessagesAsRead);
-router.delete('/:messageId', authMiddleware, messageController.deleteMessage);
+router.use(authMiddleware);
+
+router.post('/', messageController.sendMessage);
+router.get('/:matchId', messageController.getConversation);
+router.put('/:matchId/read', messageController.markAsRead);
+router.delete('/:messageId', messageController.deleteMessage);
 
 module.exports = router;

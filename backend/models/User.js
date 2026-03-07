@@ -1,55 +1,73 @@
+'use strict';
+
+const pool = require('../config/database');
+
 class User {
-    constructor(pool) {
-        this.pool = pool;
+    static async create({ email, password, name }) {
+        const { rows } = await pool.query(
+            `INSERT INTO users (email, password, name)
+             VALUES ($1, $2, $3)
+             RETURNING id, email, name, is_active, is_verified, created_at`,
+            [email.toLowerCase().trim(), password, name.trim()]
+        );
+        return rows[0];
     }
 
-    async save(userData) {
-        const { name, email } = userData;
-        const query = 'INSERT INTO users (name, email) VALUES ($1, $2) RETURNING *';
-        const values = [name, email];
-
-        const res = await this.pool.query(query, values);
-        return res.rows[0];
+    static async findById(id) {
+        const { rows } = await pool.query(
+            `SELECT u.id, u.email, u.name, u.is_active, u.is_verified, u.last_login, u.created_at,
+                    p.bio, p.age, p.gender, p.looking_for, p.mbti, p.occupation, p.education,
+                    p.height, p.latitude, p.longitude, p.city, p.country, p.photos, p.interests, p.is_complete
+             FROM users u
+             LEFT JOIN profiles p ON p.user_id = u.id
+             WHERE u.id = $1 AND u.is_active = true`,
+            [id]
+        );
+        return rows[0] || null;
     }
 
-    async findById(id) {
-        const query = 'SELECT * FROM users WHERE id = $1';
-        const values = [id];
-
-        const res = await this.pool.query(query, values);
-        return res.rows[0];
+    static async findByEmail(email) {
+        const { rows } = await pool.query(
+            `SELECT u.*, p.mbti, p.latitude, p.longitude
+             FROM users u
+             LEFT JOIN profiles p ON p.user_id = u.id
+             WHERE u.email = $1 AND u.is_active = true`,
+            [email.toLowerCase().trim()]
+        );
+        return rows[0] || null;
     }
 
-    async findByEmail(email) {
-        const query = 'SELECT * FROM users WHERE email = $1';
-        const values = [email];
-
-        const res = await this.pool.query(query, values);
-        return res.rows[0];
+    static async updateLastLogin(id) {
+        await pool.query(
+            'UPDATE users SET last_login = NOW() WHERE id = $1',
+            [id]
+        );
     }
 
-    async findAll() {
-        const query = 'SELECT * FROM users';
-
-        const res = await this.pool.query(query);
-        return res.rows;
+    static async updatePassword(id, hashedPassword) {
+        await pool.query(
+            'UPDATE users SET password = $1, updated_at = NOW() WHERE id = $2',
+            [hashedPassword, id]
+        );
     }
 
-    async update(id, userData) {
-        const { name, email } = userData;
-        const query = 'UPDATE users SET name = $1, email = $2 WHERE id = $3 RETURNING *';
-        const values = [name, email, id];
-
-        const res = await this.pool.query(query, values);
-        return res.rows[0];
+    static async delete(id) {
+        const { rows } = await pool.query(
+            'UPDATE users SET is_active = false, updated_at = NOW() WHERE id = $1 RETURNING id',
+            [id]
+        );
+        return rows[0] || null;
     }
 
-    async delete(id) {
-        const query = 'DELETE FROM users WHERE id = $1 RETURNING *';
-        const values = [id];
-
-        const res = await this.pool.query(query, values);
-        return res.rows[0];
+    static async findAllActive() {
+        const { rows } = await pool.query(
+            `SELECT u.id, u.email, u.name,
+                    p.age, p.gender, p.mbti, p.latitude, p.longitude, p.interests, p.is_complete
+             FROM users u
+             LEFT JOIN profiles p ON p.user_id = u.id
+             WHERE u.is_active = true AND p.is_complete = true`
+        );
+        return rows;
     }
 }
 

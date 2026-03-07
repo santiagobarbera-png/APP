@@ -1,0 +1,56 @@
+name: Tests & Linting
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: testpassword
+          POSTGRES_DB: dating_app_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run database migrations
+        env:
+          DATABASE_URL: postgresql://testuser:testpassword@localhost:5432/dating_app_test
+        run: |
+          npm run db:migrate || echo "Migration step skipped"
+
+      - name: Run tests
+        env:
+          DATABASE_URL: postgresql://testuser:testpassword@localhost:5432/dating_app_test
+          JWT_SECRET: test_jwt_secret_for_ci
+          NODE_ENV: test
+        run: npm test
+
+      - name: Run linter
+        run: npm run lint || true
