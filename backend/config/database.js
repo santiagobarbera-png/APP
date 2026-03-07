@@ -1,11 +1,22 @@
-const { Pool } = require('pg');
+'use strict';
 
-const pool = new Pool({
-    user: 'your_username', // replace with your database username
-    host: 'localhost', // replace with your database host
-    database: 'your_database', // replace with your database name
-    password: 'your_password', // replace with your database password
-    port: 5432, // default PostgreSQL port
+const { Pool } = require('pg');
+const config = require('./index');
+
+const poolConfig = config.db.connectionString
+    ? { connectionString: config.db.connectionString }
+    : {
+        host: config.db.host,
+        port: config.db.port,
+        database: config.db.database,
+        user: config.db.user,
+        password: config.db.password,
+    };
+
+const pool = new Pool(poolConfig);
+
+pool.on('error', (err) => {
+    console.error('Unexpected database error:', err.message);
 });
 
 module.exports = pool;

@@ -1,7 +1,37 @@
-{\n  "name": "dating-app",\n  "version": "1.0.0",\n  "description": "A full-stack dating app with AI matching capabilities.",\n  "main": "index.js",\n  "scripts": {"start": "node backend/server.js",
-"test": "echo 'Tests not configured yet'",
-"lint": "echo 'Linter not configured yet'",
-"build": "echo 'Build script not configured yet'",
-"find:perfect-matches": "node scripts/findPerfectMatches.js",
-"send:notifications": "node scripts/sendNotifications.js",
-"dev": "nodemon backend/server.js"},\n  "dependencies": {\n    "express": "^4.17.1",\n    "mongoose": "^5.10.9",\n    "cors": "^2.8.5",\n    "dotenv": "^8.2.0",\n    "jsonwebtoken": "^8.5.1",\n    "bcryptjs": "^2.4.3",\n    "axios": "^0.21.1",\n    "socket.io": "^3.1.1",\n    "@tensorflow/tfjs": "^3.6.0",\n    "@tensorflow/tfjs-node": "^3.6.0",\n    "react": "^17.0.2",\n    "react-dom": "^17.0.2",\n    "react-router-dom": "^5.2.0",\n    "redux": "^4.1.0",\n    "redux-thunk": "^2.3.0",\n    "@mui/material": "^5.0.0"\n  },\n  "devDependencies": {\n    "nodemon": "^2.0.7",\n    "eslint": "^7.14.0"\n  },\n  "keywords": [\n    "dating",\n    "social",\n    "ai",\n    "matching"\n  ],\n  "author": "santiagobarbera-png",\n  "license": "ISC"\n}
+{
+  "name": "dating-app",
+  "version": "1.0.0",
+  "description": "A full-stack dating app with AI matching capabilities.",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "nodemon backend/server.js",
+    "test": "jest --forceExit",
+    "lint": "eslint backend/ APP/scripts/ --ext .js",
+    "build": "echo 'Backend build complete'",
+    "find:perfect-matches": "node APP/scripts/findPerfectMatches.js",
+    "send:notifications": "node APP/scripts/sendNotifications.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "pg": "^8.7.1",
+    "socket.io": "^3.1.1"
+  },
+  "devDependencies": {
+    "eslint": "^7.14.0",
+    "jest": "^27.0.0",
+    "nodemon": "^2.0.7",
+    "supertest": "^6.1.3"
+  },
+  "keywords": ["dating", "social", "ai", "matching"],
+  "author": "santiagobarbera-png",
+  "license": "ISC",
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": ["**/tests/**/*.test.js"]
+  }
+}
