@@ -1,11 +1,18 @@
+'use strict';
+
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
 const authMiddleware = require('../middleware/authMiddleware');
 
-router.get('/profile/:id', authMiddleware, userController.getUserProfile);
-router.put('/profile/:id', authMiddleware, userController.updateUserProfile);
-router.get('/preferences/:id', authMiddleware, userController.getUserPreferences);
-router.delete('/account/:id', authMiddleware, userController.deleteUserAccount);
+// All user routes require authentication
+router.use(authMiddleware);
+
+router.get('/profile', userController.getMyProfile);
+router.put('/profile', userController.updateProfile);
+router.get('/preferences', userController.getPreferences);
+router.put('/preferences', userController.updatePreferences);
+router.delete('/account', userController.deleteAccount);
+router.get('/:id', userController.getUserById);
 
 module.exports = router;

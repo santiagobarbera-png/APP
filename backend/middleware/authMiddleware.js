@@ -1,20 +1,29 @@
 'use strict';
 
+require('dotenv').config();
 const jwt = require('jsonwebtoken');
-const config = require('../config');
 
 const authMiddleware = (req, res, next) => {
-    const token = req.headers['authorization']?.split(' ')[1];
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.startsWith('Bearer ')
+        ? authHeader.slice(7)
+        : null;
+
     if (!token) {
-        return res.status(401).send({ message: 'No token provided!' });
+        return res.status(401).json({ success: false, message: 'Access token required' });
     }
-    jwt.verify(token, config.jwtSecret, (err, decoded) => {
-        if (err) {
-            return res.status(403).send({ message: 'Unauthorized!' });
-        }
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.userId = decoded.id;
+        req.user = decoded;
         next();
-    });
+    } catch (err) {
+        if (err.name === 'TokenExpiredError') {
+            return res.status(401).json({ success: false, message: 'Token expired' });
+        }
+        return res.status(403).json({ success: false, message: 'Invalid token' });
+    }
 };
 
 module.exports = authMiddleware;
